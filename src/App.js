@@ -5,7 +5,6 @@ import "./styles.css";
 import Grafico from "./components/Grafico";
 import BtnYear from "./components/BtnYear";
 import BtnMonth from "./components/BtnMonth";
-import BtnWeek from "./components/BtnWeek";
 
 const useFetch = url => {
   const [valhoy, setValHoy] = useState(null);
@@ -41,12 +40,12 @@ const useFetch = url => {
 };
 
 export default function App() {
+  let [state, setState] = useState({ label: "", data: [] });
+
   const urldolarHoy =
     "https://api.sbif.cl/api-sbifv3/recursos_api/dolar?apikey=9c84db4d447c80c74961a72245371245cb7ac15f&formato=json";
 
   const { loading, error, valhoy, fechahoy } = useFetch(urldolarHoy);
-
-  let [state, setState] = useState({ label: "", data: [] });
 
   function ConvertData(data) {
     let newData = [];
@@ -59,19 +58,27 @@ export default function App() {
       let value = Number(d.Valor.replace(",", "."));
       // console.log("value", value);
       newData.push([i, value]);
-      // console.log("newData", newData);
     }
-    //console.log("newData", newData);
+
     return newData;
   }
 
-  async function ShowData(data) {
+  async function ShowDataA(data) {
     setState({ label: "", data: [] });
     let convData = await ConvertData(data);
-    // console.log("showData data: ", data);
-    //console.log("showData convData", convData);
     let dataGraf = {
-      label: "Dolar Anual",
+      label: "Anual",
+      data: convData
+    };
+
+    setState(dataGraf);
+  }
+
+  async function ShowDataM(data) {
+    setState({ label: "", data: [] });
+    let convData = await ConvertData(data);
+    let dataGraf = {
+      label: "Mensual",
       data: convData
     };
 
@@ -99,17 +106,11 @@ export default function App() {
           </h3>
 
           <h1>Evolucion del Dólar</h1>
-          <BtnYear SendData={ShowData} y={fechahoy.split("-")[0]} />
+          <BtnYear SendData={ShowDataA} y={fechahoy.split("-")[0]} />
           <BtnMonth
-            SendData={ShowData}
+            SendData={ShowDataM}
             y={fechahoy.split("-")[0]}
             m={fechahoy.split("-")[1]}
-          />
-          <BtnWeek
-            SendData={ShowData}
-            y={fechahoy.split("-")[0]}
-            m={fechahoy.split("-")[1]}
-            d={fechahoy.split("-")[2]}
           />
         </div>
       )}
