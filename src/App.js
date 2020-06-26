@@ -3,6 +3,9 @@ import React, { useState, useEffect } from "react";
 import "./styles.css";
 
 import Grafico from "./components/Grafico";
+import BtnYear from "./components/BtnYear";
+import BtnMonth from "./components/BtnMonth";
+import BtnWeek from "./components/BtnWeek";
 
 const useFetch = url => {
   const [valhoy, setValHoy] = useState(null);
@@ -41,11 +44,39 @@ export default function App() {
   const urldolarHoy =
     "https://api.sbif.cl/api-sbifv3/recursos_api/dolar?apikey=9c84db4d447c80c74961a72245371245cb7ac15f&formato=json";
 
-  function getAlAño() {
-    console.log("Evolucion al año");
+  const { loading, error, valhoy, fechahoy } = useFetch(urldolarHoy);
+
+  let [state, setState] = useState({ label: "", data: [] });
+
+  function ConvertData(data) {
+    let newData = [];
+
+    // console.log("ConverData data", data);
+    const lista = data.Dolares;
+    for (let i = 0; i < lista.length; i++) {
+      let d = lista[i];
+      // console.log("d: ", d);
+      let value = Number(d.Valor.replace(",", "."));
+      // console.log("value", value);
+      newData.push([i, value]);
+      // console.log("newData", newData);
+    }
+    //console.log("newData", newData);
+    return newData;
   }
 
-  const { loading, error, valhoy, fechahoy } = useFetch(urldolarHoy);
+  async function ShowData(data) {
+    setState({ label: "", data: [] });
+    let convData = await ConvertData(data);
+    // console.log("showData data: ", data);
+    //console.log("showData convData", convData);
+    let dataGraf = {
+      label: "Dolar Anual",
+      data: convData
+    };
+
+    setState(dataGraf);
+  }
 
   return (
     <div className="App">
@@ -64,14 +95,35 @@ export default function App() {
               month: "2-digit",
               day: "2-digit"
             }).format(new Date(fechahoy))}{" "}
-            del Dólar: {valhoy}
+            del Dólar: {valhoy} CLP
           </h3>
 
           <h1>Evolucion del Dólar</h1>
-          <Grafico />
-          <button onClick={getAlAño()}>Valor Año</button>
-          <button onClick={console.log("valor mes")}>Valor Mes</button>
-          <button onClick={console.log("valor semana")}>Valor Semana</button>
+          <BtnYear SendData={ShowData} y={fechahoy.split("-")[0]} />
+          <BtnMonth
+            SendData={ShowData}
+            y={fechahoy.split("-")[0]}
+            m={fechahoy.split("-")[1]}
+          />
+          <BtnWeek
+            SendData={ShowData}
+            y={fechahoy.split("-")[0]}
+            m={fechahoy.split("-")[1]}
+            d={fechahoy.split("-")[2]}
+          />
+        </div>
+      )}
+      {state.data.length !== 0 ? (
+        <div>
+          <Grafico showData={state} />
+        </div>
+      ) : (
+        <div>
+          <br />
+          <br />
+          <br />
+          <br />
+          Selecionar un periodo.
         </div>
       )}
     </div>
