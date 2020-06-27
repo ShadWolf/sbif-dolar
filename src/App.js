@@ -11,20 +11,30 @@ const useFetch = url => {
   const [fechahoy, setFechaHoy] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
-
+  const [errMsg, setErrMsg] = useState("");
   async function fetchData(url) {
     console.log("url", url);
     const res = await fetch(url, { method: "GET" });
+    console.log("res", res);
     res
       .json()
       .then(text => {
-        console.log("resultado consulta inicial: ", text.Dolares[0].Valor);
-        setFechaHoy(text.Dolares[0].Fecha);
-        setValHoy(text.Dolares[0].Valor);
-        setLoading(false);
+        console.log("text", text);
+        if (text.CodigoHTTP && text.CodigoHTTP === 404) {
+          console.log("fetchData");
+          setLoading(false);
+          setError(true);
+          setErrMsg(text.Mensaje);
+        } else {
+          console.log("resultado consulta inicial: ", text.Dolares[0].Valor);
+          setFechaHoy(text.Dolares[0].Fecha);
+          setValHoy(text.Dolares[0].Valor);
+          setLoading(false);
+          setErrMsg("Error servicio");
+        }
       })
       .catch(error => {
-        console.log("error", error);
+        console.log("error fetchData", error);
         setLoading(false);
         setError(true);
       });
@@ -36,16 +46,21 @@ const useFetch = url => {
     fetchData(url);
   });
 
-  return { loading, error, valhoy, fechahoy };
+  return { loading, error, errMsg, valhoy, fechahoy };
 };
 
 export default function App() {
   let [state, setState] = useState({ label: "", data: [] });
+  let [errorGraf, setErrorGraf] = useState(false);
+  let [errGrafMsg, setErrGrafMsg] = useState("");
+  const hoy = new Date();
+  const year = hoy.getFullYear().toString();
+  const month = String(hoy.getMonth + 1);
 
   const urldolarHoy =
     "https://api.sbif.cl/api-sbifv3/recursos_api/dolar?apikey=9c84db4d447c80c74961a72245371245cb7ac15f&formato=json";
 
-  const { loading, error, valhoy, fechahoy } = useFetch(urldolarHoy);
+  const { loading, error, errMsg, valhoy, fechahoy } = useFetch(urldolarHoy);
 
   function ConvertData(data) {
     let newData = [];
@@ -65,24 +80,39 @@ export default function App() {
 
   async function ShowDataA(data) {
     setState({ label: "", data: [] });
-    let convData = await ConvertData(data);
-    let dataGraf = {
-      label: "Anual",
-      data: convData
-    };
-
-    setState(dataGraf);
+    setErrorGraf(false);
+    setErrGrafMsg("");
+    if (data.CodigoHTTP && data.CodigoHTTP === 404) {
+      console.log("fetchData");
+      setErrorGraf(true);
+      setErrGrafMsg(data.Mensaje);
+    } else {
+      let convData = await ConvertData(data);
+      let dataGraf = {
+        label: "Anual",
+        data: convData
+      };
+      setState(dataGraf);
+    }
   }
 
   async function ShowDataM(data) {
     setState({ label: "", data: [] });
-    let convData = await ConvertData(data);
-    let dataGraf = {
-      label: "Mensual",
-      data: convData
-    };
+    setErrorGraf(false);
+    setErrGrafMsg("");
+    if (data.CodigoHTTP && data.CodigoHTTP === 404) {
+      console.log("fetchData");
+      setErrorGraf(true);
+      setErrGrafMsg(data.Mensaje);
+    } else {
+      let convData = await ConvertData(data);
+      let dataGraf = {
+        label: "Mensual",
+        data: convData
+      };
 
-    setState(dataGraf);
+      setState(dataGraf);
+    }
   }
 
   return (
@@ -91,7 +121,7 @@ export default function App() {
         <div>Loading...</div>
       ) : error ? (
         <div>
-          <p style={{ color: "red" }}> Error detected</p>
+          <p style={{ color: "red" }}> {errMsg} </p>
         </div>
       ) : (
         <div>
@@ -101,19 +131,18 @@ export default function App() {
               year: "numeric",
               month: "2-digit",
               day: "2-digit"
-            }).format(new Date(fechahoy))}{" "}
+            }).format(new Date(fechahoy))}
             del Dólar: {valhoy} CLP
           </h3>
-
-          <h1>Evolucion del Dólar</h1>
-          <BtnYear SendData={ShowDataA} y={fechahoy.split("-")[0]} />
-          <BtnMonth
-            SendData={ShowDataM}
-            y={fechahoy.split("-")[0]}
-            m={fechahoy.split("-")[1]}
-          />
         </div>
       )}
+      {
+        <div>
+          <h1>Evolucion del Dólar</h1>
+          <BtnYear SendData={ShowDataA} y={year} />
+          <BtnMonth SendData={ShowDataM} y={year} m={month} />
+        </div>
+      }
       {state.data.length !== 0 ? (
         <div>
           <Grafico showData={state} />
@@ -126,6 +155,13 @@ export default function App() {
           <br />
           Selecionar un periodo.
         </div>
+      )}
+      {errorGraf ? (
+        <div>
+          <p style={{ color: "red" }}> {errGrafMsg}</p>
+        </div>
+      ) : (
+        <div />
       )}
     </div>
   );
