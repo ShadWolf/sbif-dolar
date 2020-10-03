@@ -69,9 +69,8 @@ export default function App() {
     const lista = data.Dolares;
     for (let i = 0; i < lista.length; i++) {
       let d = lista[i];
-      // console.log("d: ", d);
       let value = Number(d.Valor.replace(",", "."));
-      // console.log("value", value);
+      // console.log("value", v(alue);
       newData.push([i, value]);
     }
 
@@ -121,7 +120,13 @@ export default function App() {
         <div>Loading...</div>
       ) : error ? (
         <div>
-          <p style={{ color: "red" }}> {errMsg} </p>
+          Hoy &nbsp;
+          {new Intl.DateTimeFormat("es-CL", {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+          }).format(new Date())}
+          :<p style={{ color: "red" }}> {errMsg} </p>
         </div>
       ) : (
         <div>
@@ -131,7 +136,7 @@ export default function App() {
               year: "numeric",
               month: "2-digit",
               day: "2-digit"
-            }).format(new Date(fechahoy))}
+            }).format(new Date())}
             del Dólar: {valhoy} CLP
           </h3>
         </div>

@@ -10,7 +10,7 @@ export default function Grafico(props) {
     ],
     []
   );
-  console.log("grafico props.showData: ", props.showData);
+  // console.log("grafico props.showData: ", props.showData);
   const data = React.useMemo(() => [props.showData], []);
   return (
     // A react-chart hyper-responsively and continuously fills the available
