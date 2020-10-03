@@ -6,7 +6,7 @@ import Grafico from "./components/Grafico";
 import BtnYear from "./components/BtnYear";
 import BtnMonth from "./components/BtnMonth";
 
-const useFetch = url => {
+const useFetch = (url) => {
   const [valhoy, setValHoy] = useState(null);
   const [fechahoy, setFechaHoy] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ const useFetch = url => {
     console.log("res", res);
     res
       .json()
-      .then(text => {
+      .then((text) => {
         console.log("text", text);
         if (text.CodigoHTTP && text.CodigoHTTP === 404) {
           console.log("fetchData");
@@ -33,7 +33,7 @@ const useFetch = url => {
           setErrMsg("Error servicio");
         }
       })
-      .catch(error => {
+      .catch((error) => {
         console.log("error fetchData", error);
         setLoading(false);
         setError(true);
@@ -55,7 +55,7 @@ export default function App() {
   let [errGrafMsg, setErrGrafMsg] = useState("");
   const hoy = new Date();
   const year = hoy.getFullYear().toString();
-  const month = String(hoy.getMonth + 1);
+  const month = String(hoy.getMonth() + 1);
 
   const urldolarHoy =
     "https://api.sbif.cl/api-sbifv3/recursos_api/dolar?apikey=9c84db4d447c80c74961a72245371245cb7ac15f&formato=json";
