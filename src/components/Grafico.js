@@ -15,17 +15,6 @@ export default function Grafico(props) {
     []
   );
 
-  /* const options = React.useMemo(
-    () => [
-      {
-        scales: {
-          xAxes: [{ }]
-        }
-      }
-    ],
-    []
-  );
-*/
   // console.log("grafico props.showData: ", props.showData);
   const data = React.useMemo(() => [props.showData], []);
 
