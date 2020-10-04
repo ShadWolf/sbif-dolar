@@ -2,7 +2,7 @@ import React from "react";
 
 export default function BtnYear(props) {
   async function clickAction() {
-    console.log("valor año");
+    //  console.log("valor año");
     let y = props.y;
     const url =
       "https://api.sbif.cl/api-sbifv3/recursos_api/dolar/" +
@@ -11,10 +11,10 @@ export default function BtnYear(props) {
     const res = await fetch(url, { method: "GET" });
     res
       .json()
-      .then(data => {
+      .then((data) => {
         props.SendData(data);
       })
-      .catch(error => props.SendError);
+      .catch((error) => props.SendError);
   }
 
   return <button onClick={clickAction}> Valor del año </button>;

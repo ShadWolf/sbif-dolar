@@ -14,20 +14,20 @@ const useFetch = (url) => {
   const [error, setError] = useState(false);
   const [errMsg, setErrMsg] = useState("");
   async function fetchData(url) {
-    console.log("url", url);
+    // console.log("url", url);
     const res = await fetch(url, { method: "GET" });
-    console.log("res", res);
+    //   console.log("res", res);
     res
       .json()
       .then((text) => {
-        console.log("text", text);
+        //      console.log("text", text);
         if (text.CodigoHTTP && text.CodigoHTTP === 404) {
-          console.log("fetchData");
+          //         console.log("fetchData");
           setLoading(false);
           setError(true);
           setErrMsg(text.Mensaje);
         } else {
-          console.log("resultado consulta inicial: ", text.Dolares[0].Valor);
+          //      console.log("resultado consulta inicial: ", text.Dolares[0].Valor);
           setFechaHoy(text.Dolares[0].Fecha);
           setValHoy(text.Dolares[0].Valor);
           setLoading(false);
@@ -35,7 +35,7 @@ const useFetch = (url) => {
         }
       })
       .catch((error) => {
-        console.log("error fetchData", error);
+        //       console.log("error fetchData", error);
         setLoading(false);
         setError(true);
       });
@@ -66,7 +66,7 @@ export default function App() {
   function ConvertData(data) {
     let newData = [];
 
-    console.log("ConverData data", data);
+    // console.log("ConverData data", data);
     const lista = data.Dolares;
     for (let i = 0; i < lista.length; i++) {
       let d = lista[i];
@@ -79,7 +79,7 @@ export default function App() {
   }
   function ConvertDataMonth(data) {
     let newData = [];
-    console.log("ConverData data", data);
+    //  console.log("ConverData data", data);
     const lista = data.Dolares;
     for (let i = 0; i < lista.length; i++) {
       let d = lista[i];
@@ -88,7 +88,7 @@ export default function App() {
       newData.push({ x: i + 1, y: value });
     }
 
-    console.log("newData: ", newData);
+    //   console.log("newData: ", newData);
     return newData;
   }
   async function ShowDataA(data) {
@@ -96,7 +96,7 @@ export default function App() {
     setErrorGraf(false);
     setErrGrafMsg("");
     if (data.CodigoHTTP && data.CodigoHTTP === 404) {
-      console.log("fetchData");
+      // console.log("fetchData");
       setErrorGraf(true);
       setErrGrafMsg(data.Mensaje);
     } else {
@@ -114,7 +114,7 @@ export default function App() {
     setErrorGraf(false);
     setErrGrafMsg("");
     if (data.CodigoHTTP && data.CodigoHTTP === 404) {
-      console.log("fetchData");
+      //    console.log("fetchData");
       setErrorGraf(true);
       setErrGrafMsg(data.Mensaje);
     } else {

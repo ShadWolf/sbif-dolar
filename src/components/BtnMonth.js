@@ -2,7 +2,7 @@ import React from "react";
 
 export default function BtnMonth(props) {
   async function clickAction() {
-    console.log("valor mensual");
+    //   console.log("valor mensual");
     let y = props.y;
     let m = props.m;
     const url =
@@ -11,7 +11,7 @@ export default function BtnMonth(props) {
       "/" +
       m +
       "?apikey=9c84db4d447c80c74961a72245371245cb7ac15f&formato=json";
-    console.log("url month", url);
+    //   console.log("url month", url);
     const res = await fetch(url, { method: "GET" });
     res
       .json()
