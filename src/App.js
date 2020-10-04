@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 //import ReactDOM from "react-dom";
+import moment from "moment";
 import "./styles.css";
 
 import Grafico from "./components/Grafico";
@@ -65,7 +66,7 @@ export default function App() {
   function ConvertData(data) {
     let newData = [];
 
-    // console.log("ConverData data", data);
+    console.log("ConverData data", data);
     const lista = data.Dolares;
     for (let i = 0; i < lista.length; i++) {
       let d = lista[i];
@@ -76,7 +77,20 @@ export default function App() {
 
     return newData;
   }
+  function ConvertDataMonth(data) {
+    let newData = [];
+    console.log("ConverData data", data);
+    const lista = data.Dolares;
+    for (let i = 0; i < lista.length; i++) {
+      let d = lista[i];
+      let value = Number(d.Valor.replace(",", "."));
+      // console.log("value", v(alue);
+      newData.push({ x: i + 1, y: value });
+    }
 
+    console.log("newData: ", newData);
+    return newData;
+  }
   async function ShowDataA(data) {
     setState({ label: "", data: [] });
     setErrorGraf(false);
@@ -104,7 +118,7 @@ export default function App() {
       setErrorGraf(true);
       setErrGrafMsg(data.Mensaje);
     } else {
-      let convData = await ConvertData(data);
+      let convData = await ConvertDataMonth(data);
       let dataGraf = {
         label: "Mensual",
         data: convData

@@ -5,13 +5,30 @@ import { Chart } from "react-charts";
 export default function Grafico(props) {
   const axes = React.useMemo(
     () => [
-      { primary: true, type: "linear", position: "bottom" },
+      {
+        primary: true,
+        type: "linear",
+        position: "bottom"
+      },
       { type: "linear", position: "left" }
     ],
     []
   );
+
+  /* const options = React.useMemo(
+    () => [
+      {
+        scales: {
+          xAxes: [{ }]
+        }
+      }
+    ],
+    []
+  );
+*/
   // console.log("grafico props.showData: ", props.showData);
   const data = React.useMemo(() => [props.showData], []);
+
   return (
     // A react-chart hyper-responsively and continuously fills the available
     // space of its parent element automatically
@@ -22,7 +39,7 @@ export default function Grafico(props) {
       }}
     >
       <h3>{props.showData.label}</h3>
-      <Chart data={data} axes={axes} />
+      <Chart data={data} axes={axes} tooltip />
     </div>
   );
 }
